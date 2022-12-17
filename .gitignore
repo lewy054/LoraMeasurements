@@ -1,5 +1,31 @@
 .DS_Store
 node_modules
+LoraMeasurements/dist
+/obj
+/bin
+*.esproj.user
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+.DS_Store
+node_modules
 /dist
 
 
@@ -21,4 +47,57 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+/obj
+/bin
+#Junk Files
+*.DS_Store
+[Tt]humbs.db
+
+#Visual Studio Files
+[Oo]bj
+[Bb]in
+[Dd]ebug
+[Bb]uild/
+*.user
+*.suo
+*.exe
+*.pdb
+*.aps
+*_i.c
+*_p.c
+*.ncb
+*.tlb
+*.tlh
+*.[Cc]ache
+*.bak
+*.ncb
+*.ilk
+*.log
+*.lib
+*.sbr
+*.sdf
+ipch/ 
+*.dbmdl
+*.csproj.user
+*.cache
+*.swp
+*.vspscc
+*.vssscc
+*.bak.*
+*.bak
+
+#Tools
+_ReSharper.*
+_ReSharper*/
+*.resharper
+*.resharper.user
+[Nn][Dd]epend[Oo]ut*/
+Ankh.NoLoad
+
+#Other
+.svn
+
+# Include DLLs if they're in the NuGet packages directory
+!/packages/*/lib/*.dll
+!/packages/*/lib/*/*.dll
 
