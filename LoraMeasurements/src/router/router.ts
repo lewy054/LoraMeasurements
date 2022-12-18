@@ -1,6 +1,7 @@
 ﻿import {createRouter, createWebHistory} from 'vue-router'
-import App from "@/App.vue";
 import HelloWorld from "@/components/HelloWorld.vue";
+import DevicesList from "@/views/DevicesList.vue";
+import MapsView from "@/views/MapsView.vue";
 
 export default createRouter({
     history: createWebHistory(),
@@ -9,13 +10,13 @@ export default createRouter({
             path: '/',
             component: HelloWorld,
         },
-        // {
-        //     path: '/map',
-        //     component: Map,
-        // },
-        // {
-        //     path: '/devices',
-        //     component: Devices,
-        // }
+        {
+            path: '/devices',
+            component: DevicesList,
+        },
+        {
+            path: '/map',
+            component: MapsView,
+        }
     ]
 })

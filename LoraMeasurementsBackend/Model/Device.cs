@@ -1,10 +1,13 @@
-﻿namespace LoraMeasurementsBackend.Model;
+﻿using Newtonsoft.Json;
+
+namespace LoraMeasurementsBackend.Model;
 
 public class Device
 {
     public string Id { get; set; }
     public string ApplicationId { get; set; }
     public Location Location { get; set; }
+    [JsonIgnore]
     public List<Measurement> Measurements { get; set; }
 
     public void TryUpdate(string latitude, string longitude, string applicationId,

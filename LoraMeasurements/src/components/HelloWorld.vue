@@ -1,7 +1,7 @@
 <template>
     <div class="post">
         <div v-if="loading" class="loading">
-            Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationvue">https://aka.ms/jspsintegrationvue</a> for more details.
+            Loading...
         </div>
 
         <div v-if="post" class="content">

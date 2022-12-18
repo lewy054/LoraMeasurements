@@ -46,12 +46,6 @@
           LoraMeasurements © 2022
         </v-col>
         <v-col cols="auto" class="float-right align-content-end">
-          <router-link class="reset-a" to="discord">
-            <v-icon>mdi-discord</v-icon>
-          </router-link>
-          <router-link class="reset-a" to="youtube">
-            <v-icon class="ml-5">mdi-youtube</v-icon>
-          </router-link>
         </v-col>
       </v-row>
     </v-footer>
@@ -111,6 +105,6 @@ html {
 }
 
 .dark-transparent {
-      background-color: rgba(12, 91, 236, 0.8);
+      background-color: #98c3f5 !important;
   }
 </style>

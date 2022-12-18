@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using LoraMeasurementsBackend.DAL;
+using LoraMeasurementsBackend.Dtos;
 using LoraMeasurementsBackend.Dtos.PayLoad;
 using LoraMeasurementsBackend.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,8 @@ public class TTNController : ControllerBase
     public async Task<ActionResult> Post(MeasurementDto request, CancellationToken cancellationToken)
     {
         var id = request.Identifiers[0].DeviceIds.DeviceId;
-        var device = await _context.Devices.Where(e => e.Id == id).Include(e=> e.Measurements).FirstOrDefaultAsync(cancellationToken);
+        var device = await _context.Devices.Where(e => e.Id == id).Include(e => e.Measurements)
+            .FirstOrDefaultAsync(cancellationToken);
         var location = request.Data.UplinkMessage.RxMetadata[0].Location;
         if (device == null)
         {
@@ -63,5 +65,35 @@ public class TTNController : ControllerBase
         await _context.SaveChangesAsync(cancellationToken);
 
         return Ok();
+    }
+
+    [HttpGet(Name = "GetDevices")]
+    public async Task<ActionResult<Tuple<List<Device>, int>>> GetDevices([FromQuery]PageInformation pageInformation, CancellationToken cancellationToken)
+    {
+        var devices = _context.Devices;
+        var sortedDevices = (pageInformation.SortBy, pageInformation.SortType) switch
+        {
+            ("name", "dsc") => devices.OrderByDescending(e => e.Id),
+            ("name", "asc") => devices.OrderBy(e => e.Id),
+            ("applicationId", "dsc") => devices.OrderByDescending(e => e.ApplicationId),
+            ("applicationId", "asc") => devices.OrderBy(e => e.ApplicationId),
+            ("location.latitude", "dsc") => devices.OrderByDescending(e => e.Location.Latitude),
+            ("location.longitude", "asc") => devices.OrderBy(e => e.Location.Longitude),
+            _ => devices.OrderBy(e => e.Id)
+        };
+
+        var paginationDevices = await sortedDevices
+            .Skip(pageInformation.RowsPerPage * (pageInformation.PageNumber - 1))
+            .Take(pageInformation.RowsPerPage).ToListAsync(cancellationToken);
+        var deviceQuantity = devices.Count();
+        var rtn = new Tuple<List<Device>, int>(paginationDevices, deviceQuantity);
+        return Ok(rtn);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<List<Device>>> GetDevices(CancellationToken cancellationToken)
+    {
+        var devices = await _context.Devices.ToListAsync(cancellationToken);
+        return Ok(devices);
     }
 }
