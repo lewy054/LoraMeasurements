@@ -30,6 +30,9 @@ module.exports = {
             },
             '^/ttn': {
                 target: 'https://localhost:5001/'
+            },
+            '^/measurement': {
+                target: 'https://localhost:5001/'
             }
         },
         port: 5002

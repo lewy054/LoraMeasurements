@@ -70,7 +70,7 @@ const overrideStyleFunction = (feature: any, style: any) => {
   let size = clusteredFeatures.length;
 
   let color = size > 20 ? "192,0,0" : size > 8 ? "255,128,0" : "0,128,0";
-  var radius = Math.max(8, Math.min(size, 20));
+  let radius = Math.max(8, Math.min(size, 20));
   let dash = 2 * Math.PI * radius / 6;
   let calculatedDash = [0, dash, dash, dash, dash, dash, dash];
 
@@ -92,14 +92,11 @@ const featureSelected = (event: any) => {
 
 onMounted(async () => {
   await store.fetchAllDeviceData();
-  console.log('test')
-  console.log(store.devices)
 
 })
 
 watch(store.devices, () => {
   for (const device of store.devices) {
-    console.log(device)
     let feature = new Feature({
       geometry: new Geom.Point([device.location.latitude, device.location.longitude]),
     });

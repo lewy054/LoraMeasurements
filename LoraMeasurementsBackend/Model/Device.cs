@@ -11,7 +11,7 @@ public class Device
     public List<Measurement> Measurements { get; set; }
 
     public void TryUpdate(string latitude, string longitude, string applicationId,
-        double temperature, double barometricPressure, double relativeHumidity, double analogIn)
+        double temperature, double barometricPressure, double relativeHumidity, double analogIn, DateTime measurementTime)
     {
         Location.Latitude = latitude;
         Location.Longitude = longitude;
@@ -23,7 +23,8 @@ public class Device
             Temperature = temperature,
             BarometricPressure = barometricPressure,
             RelativeHumidity = relativeHumidity,
-            AnalogIn = analogIn
+            AnalogIn = analogIn,
+            MeasurementTime = measurementTime
         });
     }
 }

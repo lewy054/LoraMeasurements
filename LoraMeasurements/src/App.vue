@@ -40,10 +40,10 @@
     <v-main class="body">
       <router-view/>
     </v-main>
-    <v-footer absolute app="true" width="auto" style="max-height: 50px;" id="grs-footer">
+    <v-footer app="true" width="auto" style="max-height: 50px;" id="grs-footer">
       <v-row>
         <v-col>
-          LoraMeasurements © 2022
+          LoraMeasurements © 2022 Norbert Lewicz
         </v-col>
         <v-col cols="auto" class="float-right align-content-end">
         </v-col>

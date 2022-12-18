@@ -47,6 +47,7 @@ public class TTNController : ControllerBase
                     BarometricPressure = request.Data.UplinkMessage.DecodedPayload.BarometricPressure,
                     RelativeHumidity = request.Data.UplinkMessage.DecodedPayload.RelativeHumidity,
                     AnalogIn = request.Data.UplinkMessage.DecodedPayload.AnalogIn,
+                    MeasurementTime = Convert.ToDateTime(request.Time)
                 }
             };
             _context.Devices.Add(device);
@@ -59,7 +60,8 @@ public class TTNController : ControllerBase
                 request.Data.UplinkMessage.DecodedPayload.Temperature,
                 request.Data.UplinkMessage.DecodedPayload.BarometricPressure,
                 request.Data.UplinkMessage.DecodedPayload.RelativeHumidity,
-                request.Data.UplinkMessage.DecodedPayload.AnalogIn);
+                request.Data.UplinkMessage.DecodedPayload.AnalogIn,
+                Convert.ToDateTime(request.Time));
         }
 
         await _context.SaveChangesAsync(cancellationToken);
@@ -73,11 +75,13 @@ public class TTNController : ControllerBase
         var devices = _context.Devices;
         var sortedDevices = (pageInformation.SortBy, pageInformation.SortType) switch
         {
-            ("name", "dsc") => devices.OrderByDescending(e => e.Id),
-            ("name", "asc") => devices.OrderBy(e => e.Id),
-            ("applicationId", "dsc") => devices.OrderByDescending(e => e.ApplicationId),
-            ("applicationId", "asc") => devices.OrderBy(e => e.ApplicationId),
-            ("location.latitude", "dsc") => devices.OrderByDescending(e => e.Location.Latitude),
+            ("id", "desc") => devices.OrderByDescending(e => e.Id),
+            ("id", "asc") => devices.OrderBy(e => e.Id),
+            ("name", "desc") => devices.OrderByDescending(e => e.ApplicationId),
+            ("name", "asc") => devices.OrderBy(e => e.ApplicationId),
+            ("location.latitude", "desc") => devices.OrderByDescending(e => e.Location.Latitude),
+            ("location.latitude", "asc") => devices.OrderBy(e => e.Location.Latitude),
+            ("location.longitude", "desc") => devices.OrderBy(e => e.Location.Longitude),
             ("location.longitude", "asc") => devices.OrderBy(e => e.Location.Longitude),
             _ => devices.OrderBy(e => e.Id)
         };
