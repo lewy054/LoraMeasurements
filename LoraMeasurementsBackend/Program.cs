@@ -31,6 +31,7 @@ if (app.Environment.IsDevelopment())
 }
 else
 {
+    app.UseHttpLogging();
     app.UseDefaultFiles();
     app.UseStaticFiles();
 }

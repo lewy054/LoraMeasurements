@@ -22,12 +22,13 @@ public class TTNController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> Post(MeasurementDto request, CancellationToken cancellationToken)
+    public async Task<ActionResult> Post(Data request, CancellationToken cancellationToken)
     {
-        var id = request.Identifiers[0].DeviceIds.DeviceId;
+        _logger.LogInformation("post");
+        var id = request.EndDeviceIds.DeviceId;
         var device = await _context.Devices.Where(e => e.Id == id).Include(e => e.Measurements)
             .FirstOrDefaultAsync(cancellationToken);
-        var location = request.Data.UplinkMessage.RxMetadata[0].Location;
+        var location = request.UplinkMessage.RxMetadata[0].Location;
         if (device == null)
         {
             device = new Device()
@@ -35,7 +36,7 @@ public class TTNController : ControllerBase
                 Id = id,
                 Location = new Model.Location(location.Latitude.ToString(CultureInfo.InvariantCulture),
                     location.Longitude.ToString(CultureInfo.InvariantCulture)),
-                ApplicationId = request.Identifiers[0].DeviceIds.ApplicationIds.ApplicationId,
+                ApplicationId = request.EndDeviceIds.ApplicationIds.ApplicationId,
             };
             device.Measurements = new List<Measurement>()
             {
@@ -43,11 +44,11 @@ public class TTNController : ControllerBase
                 {
                     DeviceId = device.Id,
                     Device = device,
-                    Temperature = request.Data.UplinkMessage.DecodedPayload.Temperature,
-                    BarometricPressure = request.Data.UplinkMessage.DecodedPayload.BarometricPressure,
-                    RelativeHumidity = request.Data.UplinkMessage.DecodedPayload.RelativeHumidity,
-                    AnalogIn = request.Data.UplinkMessage.DecodedPayload.AnalogIn,
-                    MeasurementTime = Convert.ToDateTime(request.Time)
+                    Temperature = request.UplinkMessage.DecodedPayload.Temperature,
+                    BarometricPressure = request.UplinkMessage.DecodedPayload.BarometricPressure,
+                    RelativeHumidity = request.UplinkMessage.DecodedPayload.RelativeHumidity,
+                    AnalogIn = request.UplinkMessage.DecodedPayload.AnalogIn,
+                    MeasurementTime = Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time)
                 }
             };
             _context.Devices.Add(device);
@@ -56,12 +57,12 @@ public class TTNController : ControllerBase
         {
             device.TryUpdate(location.Latitude.ToString(CultureInfo.InvariantCulture),
                 location.Longitude.ToString(CultureInfo.InvariantCulture),
-                request.Identifiers[0].DeviceIds.ApplicationIds.ApplicationId,
-                request.Data.UplinkMessage.DecodedPayload.Temperature,
-                request.Data.UplinkMessage.DecodedPayload.BarometricPressure,
-                request.Data.UplinkMessage.DecodedPayload.RelativeHumidity,
-                request.Data.UplinkMessage.DecodedPayload.AnalogIn,
-                Convert.ToDateTime(request.Time));
+                request.EndDeviceIds.ApplicationIds.ApplicationId,
+                request.UplinkMessage.DecodedPayload.Temperature,
+                request.UplinkMessage.DecodedPayload.BarometricPressure,
+                request.UplinkMessage.DecodedPayload.RelativeHumidity,
+                request.UplinkMessage.DecodedPayload.AnalogIn,
+                Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time));
         }
 
         await _context.SaveChangesAsync(cancellationToken);

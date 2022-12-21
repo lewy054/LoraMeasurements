@@ -102,3 +102,4 @@ Ankh.NoLoad
 !/packages/*/lib/*.dll
 !/packages/*/lib/*/*.dll
 
+*.pubxml

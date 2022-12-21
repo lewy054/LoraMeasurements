@@ -18,10 +18,18 @@ public class MeasurementController : ControllerBase
         _context = context;
     }
 
-    [HttpGet("{id}")]
-    public async Task<ActionResult<List<Measurement>>> GetMeasurements(string id, CancellationToken cancellationToken)
+    [HttpGet("{id}/{from}/{to}")]
+    public async Task<ActionResult<List<Measurement>>> GetMeasurements(string id, long from, long to, CancellationToken cancellationToken)
     {
-        var measurements = await _context.Measurements.Where(e => e.DeviceId == id).ToListAsync(cancellationToken);
+        var fromDate = DateTimeOffset.FromUnixTimeSeconds(from / 1000).UtcDateTime;
+        var toDate = DateTimeOffset.FromUnixTimeSeconds(to / 1000).UtcDateTime;
+        var t =  _context.Measurements
+            .Where(e => e.DeviceId == id).OrderBy(e=> e.MeasurementTime).ToList();
+        var measurements = await _context.Measurements
+            .Where(e => e.DeviceId == id)
+            .OrderBy(e=> e.MeasurementTime)
+            .Where(obj => obj.MeasurementTime >= fromDate && obj.MeasurementTime < toDate)
+            .ToListAsync(cancellationToken);
         return Ok(measurements);
     }
 }

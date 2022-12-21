@@ -5,8 +5,6 @@ namespace LoraMeasurementsBackend.Dtos;
 
 public class Data
 {
-    [JsonPropertyName("@type")]
-    public string Type { get; set; }
 
     [JsonPropertyName("end_device_ids")]
     public EndDeviceIds EndDeviceIds { get; set; }
