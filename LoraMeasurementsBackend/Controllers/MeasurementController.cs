@@ -23,8 +23,6 @@ public class MeasurementController : ControllerBase
     {
         var fromDate = DateTimeOffset.FromUnixTimeSeconds(from / 1000).UtcDateTime;
         var toDate = DateTimeOffset.FromUnixTimeSeconds(to / 1000).UtcDateTime;
-        var t =  _context.Measurements
-            .Where(e => e.DeviceId == id).OrderBy(e=> e.MeasurementTime).ToList();
         var measurements = await _context.Measurements
             .Where(e => e.DeviceId == id)
             .OrderBy(e=> e.MeasurementTime)

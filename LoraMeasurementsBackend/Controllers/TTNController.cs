@@ -78,8 +78,8 @@ public class TTNController : ControllerBase
         {
             ("id", "desc") => devices.OrderByDescending(e => e.Id),
             ("id", "asc") => devices.OrderBy(e => e.Id),
-            ("name", "desc") => devices.OrderByDescending(e => e.ApplicationId),
-            ("name", "asc") => devices.OrderBy(e => e.ApplicationId),
+            ("applicationId", "desc") => devices.OrderByDescending(e => e.ApplicationId),
+            ("applicationId", "asc") => devices.OrderBy(e => e.ApplicationId),
             ("location.latitude", "desc") => devices.OrderByDescending(e => e.Location.Latitude),
             ("location.latitude", "asc") => devices.OrderBy(e => e.Location.Latitude),
             ("location.longitude", "desc") => devices.OrderBy(e => e.Location.Longitude),
