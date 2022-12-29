@@ -1,8 +1,21 @@
 ﻿<template>
-  <v-container v-if="store.measurementsLoading">
-    Loading...
+  <v-container v-if="store.measurementsLoading" class="h-100 w-100 d-flex justify-content-center">
+    <v-progress-circular
+        class="container h-auto d-flex ml-auto mr-auto"
+        indeterminate
+        :size="250"
+        :width="5"
+        color="primary"
+    ></v-progress-circular>
   </v-container>
-  <v-container v-else style="height: 90vh">
+  <v-container v-else class="mt-5">
+    <v-responsive
+        max-width="500">
+      <v-row>
+        <v-text-field type="datetime-local" label="Od" v-model="from"></v-text-field>
+        <v-text-field type="datetime-local" label="Do" v-model="to"></v-text-field>
+      </v-row>
+    </v-responsive>
     <v-row>
       <v-col class="chart">
         <canvas id="temperatureChart"></canvas>
@@ -11,7 +24,7 @@
         <canvas id="relativeHumidityChart"></canvas>
       </v-col>
     </v-row>
-    <v-row >
+    <v-row>
       <v-col class="chart">
         <canvas id="barometricPressureChart"></canvas>
       </v-col>
@@ -24,19 +37,35 @@
 
 <script setup lang="ts">
 import {useRoute} from "vue-router";
-import {onMounted, onUnmounted, onUpdated} from 'vue';
+import {onMounted, onUnmounted, onUpdated, ref, watch} from 'vue';
 import Chart from 'chart.js/auto';
 import {useMainStore} from "@/stores/main";
+import {DateTime} from "luxon";
+
 
 const route = useRoute();
 const id = route.params.id.toString();
 const store = useMainStore();
+const from = ref(DateTime.now().minus({days: 1}).toFormat("yyyy-LL-dd'T'T"));
+const to = ref(DateTime.now().toFormat("yyyy-LL-dd'T'T"));
+
+watch(from, async () => {
+  await fetchData();
+})
+
+watch(to, async () => {
+  await fetchData();
+})
 
 onMounted(async () => {
-  await store.fetchMeasurements(id);
-  console.log(store.measurements)
-
+  await fetchData();
 })
+
+async function fetchData() {
+  const fromTimestamp = DateTime.fromISO(from.value).toFormat('x');
+  const toTimestamp = DateTime.fromISO(to.value).toFormat('x');
+  await store.fetchMeasurements(id, fromTimestamp, toTimestamp);
+}
 
 onUpdated(() => {
   createTemperatureChart();
@@ -81,7 +110,7 @@ function createRelativeHumidityChart() {
   }
 }
 
-function createChart(html: HTMLElement, labels: string[], data: number[], label: string, color:string): Chart {
+function createChart(html: HTMLElement, labels: string[], data: number[], label: string, color: string): Chart {
   return new Chart(html, {
     type: 'line',
     data: {
@@ -105,8 +134,8 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.chart{
+.chart {
   position: relative;
-  height: 45vh;
+  height: 40vh;
 }
 </style>
