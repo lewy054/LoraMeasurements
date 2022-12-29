@@ -1,5 +1,4 @@
 ﻿import {createRouter, createWebHistory} from 'vue-router'
-import HelloWorld from "@/components/HelloWorld.vue";
 import DevicesList from "@/views/DevicesList.vue";
 import DeviceDetails from "@/views/DeviceDetails.vue";
 import MapsView from "@/views/MapsView.vue";
@@ -9,10 +8,6 @@ export default createRouter({
     routes: [
         {
             path: '/',
-            component: HelloWorld,
-        },
-        {
-            path: '/devices',
             component: DevicesList,
         },
         {

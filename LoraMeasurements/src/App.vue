@@ -22,11 +22,6 @@
 
     <v-navigation-drawer v-model="store.sideBar" absolute class="dark-transparent">
       <router-link to="/" class="reset-a" @click="store.changeSideBarVisibility()">
-        <v-list-item prepend-icon="mdi-home">
-          Home
-        </v-list-item>
-      </router-link>
-      <router-link to="/devices" class="reset-a" @click="store.changeSideBarVisibility()">
         <v-list-item prepend-icon="mdi-forum">
           Urządzenia
         </v-list-item>
