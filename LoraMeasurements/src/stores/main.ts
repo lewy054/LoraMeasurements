@@ -48,7 +48,7 @@ export const useMainStore = defineStore('main', {
                 });
         },
 
-        async fetchMeasurements(id: string, from: number, to: number) {
+        async fetchMeasurements(id: string, from: string, to: string) {
             this.measurementsLoading = true;
             fetch(`/measurement/${id}/${from}/${to}`)
                 .then(r => r.json())

@@ -48,7 +48,11 @@ public class TTNController : ControllerBase
                     BarometricPressure = request.UplinkMessage.DecodedPayload.BarometricPressure,
                     RelativeHumidity = request.UplinkMessage.DecodedPayload.RelativeHumidity,
                     AnalogIn = request.UplinkMessage.DecodedPayload.AnalogIn,
-                    MeasurementTime = Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time)
+                    MeasurementTime = Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time),
+                    Rssi = request.UplinkMessage.RxMetadata[0].Rssi,
+                    Snr = request.UplinkMessage.RxMetadata[0].Snr,
+                    ChannelId = request.UplinkMessage.RxMetadata[0].ChannelIndex,
+                    ChannelRssi = request.UplinkMessage.RxMetadata[0].ChannelRssi,
                 }
             };
             _context.Devices.Add(device);
@@ -62,7 +66,11 @@ public class TTNController : ControllerBase
                 request.UplinkMessage.DecodedPayload.BarometricPressure,
                 request.UplinkMessage.DecodedPayload.RelativeHumidity,
                 request.UplinkMessage.DecodedPayload.AnalogIn,
-                Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time));
+                Convert.ToDateTime(request.UplinkMessage.RxMetadata[0].Time),
+                request.UplinkMessage.RxMetadata[0].Rssi,
+                request.UplinkMessage.RxMetadata[0].Snr,
+                request.UplinkMessage.RxMetadata[0].ChannelIndex,
+                request.UplinkMessage.RxMetadata[0].ChannelRssi);
         }
 
         await _context.SaveChangesAsync(cancellationToken);

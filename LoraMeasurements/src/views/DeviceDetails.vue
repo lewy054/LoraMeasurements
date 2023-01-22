@@ -11,27 +11,66 @@
   <v-container v-else class="mt-5">
     <v-responsive
         max-width="500">
-      <v-row>
+      <v-row >
         <v-text-field type="datetime-local" label="Od" v-model="from"></v-text-field>
         <v-text-field type="datetime-local" label="Do" v-model="to"></v-text-field>
       </v-row>
     </v-responsive>
-    <v-row>
-      <v-col class="chart">
-        <canvas id="temperatureChart"></canvas>
-      </v-col>
-      <v-col class="chart">
-        <canvas id="relativeHumidityChart"></canvas>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="chart">
-        <canvas id="barometricPressureChart"></canvas>
-      </v-col>
-      <v-col class="chart">
-        <canvas id="analogInChart"></canvas>
-      </v-col>
-    </v-row>
+
+    <v-card>
+      <v-tabs grow
+              v-model="tab"
+              fixed-tabs
+              bg-color="indigo-darken-2"
+      >
+        <v-tab value="one">Dane o pogodzie</v-tab>
+        <v-tab value="two">Dane o urządzeniu</v-tab>
+      </v-tabs>
+      <v-card-text>
+        <v-window v-model="tab">
+          <v-window-item value="one" :eager="true">
+            <v-row class="justify-center">
+              <v-col class="tempChart" :cols="12">
+                <canvas id="temperatureChart"></canvas>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="chart" :cols="6">
+                <canvas id="relativeHumidityChart"></canvas>
+              </v-col>
+              <v-col class="chart">
+                <canvas id="barometricPressureChart"></canvas>
+              </v-col>
+            </v-row>
+          </v-window-item>
+
+          <v-window-item value="two" :eager="true">
+            <v-row>
+              <v-col class="chart">
+                <canvas id="analogInChart"></canvas>
+              </v-col>
+              <v-col class="chart">
+                <canvas id="channelRssiChart"></canvas>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="chart">
+                <canvas id="rssiChart"></canvas>
+              </v-col>
+              <v-col class="chart">
+                <canvas id="snrChart"></canvas>
+              </v-col>
+            </v-row>
+            <v-row class="justify-center">
+              <v-col class="pieChart" :cols="12">
+                <canvas id="channelIdChart"></canvas>
+              </v-col>
+            </v-row>
+          </v-window-item>
+
+        </v-window>
+      </v-card-text>
+    </v-card>
   </v-container>
 </template>
 
@@ -48,6 +87,7 @@ const id = route.params.id.toString();
 const store = useMainStore();
 const from = ref(DateTime.now().minus({days: 1}).toFormat("yyyy-LL-dd'T'T"));
 const to = ref(DateTime.now().toFormat("yyyy-LL-dd'T'T"));
+const tab = ref(null);
 
 watch(from, async () => {
   await fetchData();
@@ -72,7 +112,68 @@ onUpdated(() => {
   createRelativeHumidityChart();
   createBarometricPressureChart();
   createAnalogInChart();
+  createRssiChart();
+  createSnrChart();
+  createChannelRsiChart();
+  createChannelIdChart();
 })
+
+function createChannelRsiChart() {
+  const ctx = document.getElementById('channelRssiChart');
+  if (ctx) {
+    const labels = store.measurements.map(e => e.measurementTime);
+    const data = store.measurements.map(e => e.channelRssi);
+    createChart(ctx, labels, data, "Rssi kanałów", "#0e6907")
+  }
+}
+
+function createChannelIdChart() {
+  const ctx = document.getElementById('channelIdChart');
+  if (ctx) {
+    let groupedData: Array<{ key: number; value: number; }> = [];
+    store.measurements.forEach(e => {
+      if (groupedData.some(d => d.key === e.channelId)) {
+        let item = Object.entries(groupedData).find(a => a[1].key === e.channelId)
+        if (item) {
+          item[1].value += 1
+        }
+      } else {
+        groupedData.push({
+          key: e.channelId,
+          value: e.channelId,
+        });
+      }
+    })
+    return new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: groupedData.map(e => e.key),
+        datasets: [{
+          label: "Ilość wykorzystania kanału",
+          data: groupedData.map(e => e.value),
+        }],
+      },
+    });
+  }
+}
+
+function createSnrChart() {
+  const ctx = document.getElementById('snrChart');
+  if (ctx) {
+    const labels = store.measurements.map(e => e.measurementTime);
+    const data = store.measurements.map(e => e.snr);
+    createChart(ctx, labels, data, "SNR", "#cc10c9")
+  }
+}
+
+function createRssiChart() {
+  const ctx = document.getElementById('rssiChart');
+  if (ctx) {
+    const labels = store.measurements.map(e => e.measurementTime);
+    const data = store.measurements.map(e => e.rssi);
+    createChart(ctx, labels, data, "Rssi", "#774905")
+  }
+}
 
 function createAnalogInChart() {
   const ctx = document.getElementById('analogInChart');
@@ -134,8 +235,22 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.pieChart {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  height: 50vh;
+}
+
+.tempChart {
+  height: 60vh;
+  display: flex;
+  justify-content: center;
+}
+
 .chart {
   position: relative;
-  height: 40vh;
+  height: 50vh;
 }
 </style>

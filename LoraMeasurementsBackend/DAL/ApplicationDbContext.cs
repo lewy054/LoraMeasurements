@@ -31,6 +31,10 @@ public class ApplicationDbContext : DbContext
             measurement.Property(m => m.AnalogIn);
             measurement.Property(m => m.BarometricPressure);
             measurement.Property(m => m.RelativeHumidity);
+            measurement.Property(m => m.ChannelId);
+            measurement.Property(m => m.ChannelRssi);
+            measurement.Property(m => m.Rssi);
+            measurement.Property(m => m.Snr);
             measurement.HasOne(p => p.Device)
                 .WithMany(b => b.Measurements);
         });
