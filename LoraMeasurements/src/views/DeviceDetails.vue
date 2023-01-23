@@ -35,7 +35,7 @@
               </v-col>
             </v-row>
             <v-row>
-              <v-col class="chart" :cols="6">
+              <v-col class="chart">
                 <canvas id="relativeHumidityChart"></canvas>
               </v-col>
               <v-col class="chart">
@@ -62,7 +62,7 @@
               </v-col>
             </v-row>
             <v-row class="justify-center">
-              <v-col class="pieChart" :cols="12">
+              <v-col class="pieChart">
                 <canvas id="channelIdChart"></canvas>
               </v-col>
             </v-row>
