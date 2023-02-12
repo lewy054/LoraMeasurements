@@ -32,11 +32,13 @@ Project is created with:
 * MSSQL
 * Vue
 * Vuetify
+* Vue Router
+* Vue3-OpenLayers
+* Pinia
 * Typescript
 * HTML
 * CSS
 * ChartsJs
-* Vue3-OpenLayers
 
 ## Setup
 ### Add a webhook
